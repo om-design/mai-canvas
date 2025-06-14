@@ -1,18 +1,18 @@
 # mai-canvas
-**A personal modular dashboard linking personal content and AI services**
 
+A personal modular dashboard linking personal content and AI services
 
 ---
 
 ## Vision
 
-Personal AI Canvas is an open-source platform that empowers you to orchestrate your digital life with total control and privacy.  
-Drag, drop, and wire together your local assets, AI models, and external services on a visual canvas—always knowing what stays private and what leaves your device.
+**mai-canvas** is an open-source platform that puts you in control of your digital life.  
+Visually connect your files, notes, and personal assets to local and external AI services on a modular canvas—always knowing what stays private and what leaves your device.
 
 - **Yellow Border:** Instantly see which data and services are local (inside the border) and which are external (outside).
-- **Wiring:** Connect your files, notes, and other assets to AI tools and services with intuitive visual “wires.”
-- **Privacy by Design:** Data only leaves your device when you explicitly allow it. Vector abstraction services let you use powerful AI without exposing your content.
-- **Composable:** Mix and match local and external models, automate workflows, and chain together multiple agents for consensus or verification.
+- **Wiring:** Drag and drop connections between your content and AI tools, with clear visual cues for privacy and data flow.
+- **Privacy by Design:** Data only leaves your device when you explicitly allow it. Use vector abstraction to leverage powerful AI without exposing your raw content.
+- **Composable:** Mix and match local and external models, automate workflows, and chain together multiple agents for richer, more reliable results.
 - **Extensible:** Add new services, plugins, and connection types as the ecosystem grows.
 
 ---
@@ -32,7 +32,7 @@ Drag, drop, and wire together your local assets, AI models, and external service
 - **Blocks:** Represent local assets, AI models, and external services as modular blocks.
 - **Wires:** Connect blocks to create workflows. Wires crossing the yellow border indicate data leaving your device.
 - **Abstraction Services:** Use vector embeddings to perform useful work (search, clustering, recommendations) without sharing raw content.
-- **Multi-Agent Chaining:** Run tasks through multiple models or services for richer, more reliable results.
+- **Multi-Agent Chaining:** Run tasks through multiple models or services for consensus, verification, or multi-perspective results.
 
 ---
 
@@ -67,7 +67,7 @@ We’re looking for:
 
 ## Inspiration
 
-- Node-RED, n8n, Pinokio, Agregiore, Smithery, Obsidian, Logseq, OpenMined, and the emerging MCP ecosystem.
+Node-RED, n8n, Pinokio, Agregiore, Smithery, Obsidian, Logseq, OpenMined, and the emerging MCP ecosystem.
 
 ---
 
