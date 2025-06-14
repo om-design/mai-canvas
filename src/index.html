@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>mai-canvas Prototype</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    .canvas-container {
+      position: relative;
+      width: 900px;
+      height: 600px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .local-zone {
+      position: absolute;
+      left: 40px;
+      top: 40px;
+      width: 500px;
+      height: 520px;
+      border: 4px solid gold;
+      border-radius: 16px;
+      background: rgba(255, 255, 200, 0.08);
+      z-index: 1;
+    }
+    .block {
+      position: absolute;
+      width: 120px;
+      height: 60px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      user-select: none;
+      font-weight: bold;
+      font-size: 1rem;
+      z-index: 2;
+    }
+    .local-block {
+      background: #e0ffe0;
+      border: 2px solid #4caf50;
+      color: #2e7d32;
+    }
+    .external-block {
+      background: #e3e6fd;
+      border: 2px solid #3f51b5;
+      color: #1a237e;
+    }
+    .wire {
+      position: absolute;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center; margin-top:24px;">mai-canvas Prototype</h2>
+  <div class="canvas-container" id="canvas">
+    <div class="local-zone"></div>
+    <div class="block local-block" id="local1" style="left:80px; top:100px;">📄 Notes</div>
+    <div class="block local-block" id="local2" style="left:320px; top:350px;">📁 Photos</div>
+    <div class="block external-block" id="external1" style="left:650px; top:120px;">🤖 Summarizer</div>
+    <div class="block external-block" id="external2" style="left:650px; top:400px;">🔗 Vector Search</div>
+    <!-- SVG wires will be injected here -->
+    <svg id="wires" class="wire" width="900" height="600"></svg>
+  </div>
+  <p style="text-align:center; color:#888; margin-top:16px;">
+    <b>Yellow border:</b> Local/private zone. <b>Green blocks:</b> Local assets. <b>Blue blocks:</b> External services.<br>
+    <i>(Drag blocks to move them. Click a local block, then an external block to draw a wire.)</i>
+  </p>
+  <script>
+    // Drag and drop logic
+    let dragging = null, offsetX = 0, offsetY = 0;
+    document.querySelectorAll('.block').forEach(block => {
+      block.addEventListener('mousedown', e => {
+        dragging = block;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+        block.style.zIndex = 10;
+      });
+    });
+    document.addEventListener('mousemove', e => {
+      if (dragging) {
+        const canvasRect = document.getElementById('canvas').getBoundingClientRect();
+        let x = e.clientX - canvasRect.left - offsetX;
+        let y = e.clientY - canvasRect.top - offsetY;
+        // Keep within canvas
+        x = Math.max(0, Math.min(x, 900 - dragging.offsetWidth));
+        y = Math.max(0, Math.min(y, 600 - dragging.offsetHeight));
+        dragging.style.left = x + 'px';
+        dragging.style.top = y + 'px';
+        drawWires();
+      }
+    });
+    document.addEventListener('mouseup', () => {
+      if (dragging) dragging.style.zIndex = 2;
+      dragging = null;
+    });
+
+    // Wire drawing logic
+    let wireStart = null;
+    document.querySelectorAll('.local-block').forEach(block => {
+      block.addEventListener('click', e => {
+        wireStart = block;
+        e.stopPropagation();
+      });
+    });
+    document.querySelectorAll('.external-block').forEach(block => {
+      block.addEventListener('click', e => {
+        if (wireStart) {
+          addWire(wireStart.id, block.id);
+          wireStart = null;
+        }
+        e.stopPropagation();
+      });
+    });
+    document.body.addEventListener('click', () => { wireStart = null; });
+
+    let wires = [];
+    function addWire(fromId, toId) {
+      wires.push({from: fromId, to: toId});
+      drawWires();
+    }
+    function drawWires() {
+      const svg = document.getElementById('wires');
+      svg.innerHTML = '';
+      wires.forEach(wire => {
+        const from = document.getElementById(wire.from);
+        const to = document.getElementById(wire.to);
+        if (from && to) {
+          const fromRect = from.getBoundingClientRect();
+          const toRect = to.getBoundingClientRect();
+          const canvasRect = document.getElementById('canvas').getBoundingClientRect();
+          const x1 = fromRect.right - canvasRect.left;
+          const y1 = fromRect.top + fromRect.height/2 - canvasRect.top;
+          const x2 = toRect.left - canvasRect.left;
+          const y2 = toRect.top + toRect.height/2 - canvasRect.top;
+          svg.innerHTML += `<path d="M${x1},${y1} C${x1+60},${y1} ${x2-60},${y2} ${x2},${y2}" stroke="#ffb300" stroke-width="4" fill="none" marker-end="url(#arrow)"/>`;
+        }
+      });
+      // Add arrow marker
+      svg.innerHTML += `<defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L10,5 L0,10 Z" fill="#ffb300"/>
+        </marker>
+      </defs>`;
+    }
+    drawWires();
+  </script>
+</body>
+</html>
